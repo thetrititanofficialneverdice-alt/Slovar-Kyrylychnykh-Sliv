@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Словар букв ѣ ꙓ</title>
+<style>
+:root{--bg:#0b1020;--panel:#151d33;--text:#f3f5ff;--muted:#aab5d0;--accent:#9b8cff;--accent2:#62d6c5;--line:#2c3858}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 0%,#27345b 0,transparent 42%),radial-gradient(ellipse at 90% 90%,#1b4350 0,transparent 35%),var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;padding:28px 16px}
+.wrap{max-width:850px;margin:auto}
+.brand{text-align:center;margin:16px 0 28px}
+.brand h1{font-size:clamp(25px,5vw,42px);margin:0 0 9px;letter-spacing:1px}
+.brand p,.hint{color:var(--muted)}
+.panel{background:rgba(21,29,51,.94);border:1px solid var(--line);border-radius:20px;padding:22px;margin:16px 0;box-shadow:0 18px 55px #0004}
+h2{font-size:19px;margin:0 0 12px}
+label{display:block;color:var(--muted);font-size:13px;margin:0 0 7px}
+textarea,select{width:100%;background:#0d1529;border:1px solid var(--line);border-radius:11px;color:var(--text);padding:12px 13px;font:inherit;outline:none}
+textarea{min-height:150px;resize:vertical;line-height:1.55}
+textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #9b8cff22}
+button{border:0;border-radius:11px;padding:11px 16px;font-weight:700;font-size:14px;cursor:pointer;background:var(--accent);color:#100d27;transition:.15s}
+button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+button.secondary{background:#293653;color:var(--text);border:1px solid #405071}
+button.green{background:var(--accent2);color:#09201e}
+button.selected{outline:2px solid var(--accent2);outline-offset:2px}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.symbol-choice{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.hint{font-size:13px;line-height:1.5}
+.status{min-height:20px;color:var(--accent2);font-size:13px;margin-top:8px}
+.topline{display:flex;justify-content:flex-end;margin-bottom:15px}
+#languageSelect{width:auto}
+.language-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,7,18,.88);backdrop-filter:blur(8px)}
+.language-dialog{width:min(100%,480px);padding:26px;background:#151d33;border:1px solid #405071;border-radius:20px;box-shadow:0 24px 80px #0009;text-align:center}
+.language-dialog h2{font-size:clamp(20px,4vw,27px);line-height:1.35;margin:0 0 10px}
+.language-dialog p{color:var(--muted);margin:0 0 20px}
+.language-options{display:grid;gap:10px}
+.language-options button{width:100%;font-size:16px;padding:14px}
+.language-overlay[hidden]{display:none}
+@media(max-width:620px){body{padding:18px 12px}.panel{padding:17px}.brand{margin-top:8px}}
+</style>
+</head>
+<body>
+<div class="language-overlay" id="languageOverlay" role="dialog" aria-modal="true" aria-labelledby="languagePrompt">
+  <div class="language-dialog">
+    <h2 id="languagePrompt">Виберіть мову для початку</h2>
+    <p id="languagePromptSub">Выберите язык для начала · Абярыце мову для пачатку</p>
+    <div class="language-options">
+      <button type="button" onclick="selectInitialLanguage('uk')">Українська</button>
+      <button type="button" onclick="selectInitialLanguage('ru')">Русский</button>
+      <button type="button" onclick="selectInitialLanguage('be')">Беларуская</button>
+    </div>
+  </div>
+</div>
+<div class="wrap">
+  <header class="brand">
+    <div class="topline">
+      <button type="button" class="secondary" id="changeLanguageBtn" onclick="openLanguageChooser()">Змінити мову</button>
+      <select id="languageSelect" aria-label="Мова інтерфейсу" onchange="setLanguage(this.value)">
+        <option value="uk">Українська</option><option value="ru">Русский</option><option value="be">Беларуськая</option>
+      </select>
+    </div>
+    <h1>СꙤОѴꙖР БꙊКѴ ѣ ꙓ</h1>
+    <p id="tagline">Введіть текст — сайт автоматично виконає перетворення.</p>
+  </header>
+
+  <section class="panel">
+    <h2 id="aboutTitle">Пояснення</h2>
+    <p class="hint" id="aboutText">Введіть або вставте текст у поле нижче. В усіх трьох мовах літери а, и, ы, е, є, э, і та ь (великі й малі) автоматично замінюються вибраним символом ѣ або ꙓ у будь-якому місці тексту.</p>
+  </section>
+
+  <section class="panel">
+    <h2 id="inputTitle">Введіть текст</h2>
+    <label id="inputLabel" for="sourceText">Ваш текст</label>
+    <textarea id="sourceText" oninput="convertText()" placeholder="Напишіть або вставте текст тут..."></textarea>
+
+    <div style="margin-top:16px">
+      <label id="symbolModeLabel">Символ для перетворення</label>
+      <div class="symbol-choice">
+        <button type="button" class="secondary selected" id="modeYe" onclick="chooseMode('ѣ')">ѣ</button>
+        <button type="button" class="secondary" id="modeYat" onclick="chooseMode('ꙓ')">ꙓ</button>
+      </div>
+    </div>
+
+    <div class="actions" style="margin-top:16px">
+      <button class="secondary" id="clearBtn" onclick="clearText()">Очистити текст</button>
+    </div>
+
+    <div class="actions">
+      <button class="green" id="convertBtn" onclick="convertText()">Перетворити текст</button>
+    </div>
+
+    <div style="margin-top:18px">
+      <label id="resultLabel" for="resultText">Результат</label>
+      <textarea id="resultText" readonly placeholder="Тут з'явиться перетворений текст..."></textarea>
+      <div class="actions"><button class="secondary" id="copyBtn" onclick="copyResult()">Копіювати результат</button></div>
+      <div class="status" id="status" aria-live="polite"></div>
+    </div>
+  </section>
+  <p class="hint" style="text-align:center">СꙤОѴꙖР БꙊКѴ ѣ ꙓ</p>
+</div>
+
+<script>
+const translations={
+ uk:{
+  tagline:"Введіть текст — сайт автоматично виконає перетворення.",
+  aboutTitle:"Пояснення",
+  aboutText:"Введіть або вставте текст у поле нижче. В усіх трьох мовах літери а, и, ы, е, є, э, і та ь (великі й малі) автоматично замінюються вибраним символом ѣ або ꙓ у будь-якому місці тексту.",
+  inputTitle:"Введіть текст",inputLabel:"Ваш текст",inputPh:"Напишіть або вставте текст тут...",
+  symbolMode:"Символ для перетворення",result:"Результат",
+  resultPh:"Тут з'явиться перетворений текст...",run:"Перетворити текст",clear:"Очистити текст",
+  copy:"Копіювати результат",done:"Текст перетворено.",copied:"Результат скопійовано.",
+  nothing:"Немає результату для копіювання.",
+   changeLanguage:"Змінити мову",languagePrompt:"Виберіть мову для початку"
+ },
+ ru:{
+  tagline:"Введите текст — сайт автоматически выполнит преобразование.",
+  aboutTitle:"Пояснение",
+  aboutText:"Введите или вставьте текст в поле ниже. Во всех трёх языках буквы а, и, ы, е, є, э, і и ь (строчные и заглавные) автоматически заменяются выбранным символом ѣ или ꙓ в любом месте текста.",
+  inputTitle:"Введите текст",inputLabel:"Ваш текст",inputPh:"Напишите или вставьте текст здесь...",
+  symbolMode:"Символ для преобразования",result:"Результат",
+  resultPh:"Здесь появится преобразованный текст...",run:"Преобразовать текст",clear:"Очистить текст",
+  copy:"Копировать результат",done:"Текст преобразован.",copied:"Результат скопирован.",
+  nothing:"Нет результата для копирования.",
+   changeLanguage:"Изменить язык",languagePrompt:"Выберите язык для начала"
+ },
+ be:{
+  tagline:"Увядзіце тэкст — сайт аўтаматычна выканае пераўтварэнне.",
+  aboutTitle:"Тлумачэнне",
+  aboutText:"Увядзіце або ўстаўце тэкст у поле ніжэй. Ва ўсіх трох мовах літары а, и, ы, е, є, э, і і ь (малыя і вялікія) аўтаматычна замяняюцца выбраным сімвалам ѣ або ꙓ у любым месцы тэксту.",
+  inputTitle:"Увядзіце тэкст",inputLabel:"Ваш тэкст",inputPh:"Напішыце або ўстаўце тэкст тут...",
+  symbolMode:"Сімвал для пераўтварэння",result:"Вынік",
+  resultPh:"Тут з'явіцца пераўтвораны тэкст...",run:"Пераўтварыць тэкст",clear:"Ачысціць тэкст",
+  copy:"Скапіяваць вынік",done:"Тэкст пераўтвораны.",copied:"Вынік скапіяваны.",
+  nothing:"Няма выніку для капіявання.",
+   changeLanguage:"Змяніць мову",languagePrompt:"Абярыце мову для пачатку"
+ }
+};
+let language='uk';
+let replacementSymbol='ѣ';
+function setLanguage(lang){
+ language=lang;
+ document.documentElement.lang=lang;
+ document.getElementById('languageSelect').value=lang;
+ const t=translations[lang];
+ const map={tagline:'tagline',aboutTitle:'aboutTitle',aboutText:'aboutText',inputTitle:'inputTitle',
+ inputLabel:'inputLabel',symbolMode:'symbolModeLabel',result:'resultLabel',run:'convertBtn',
+ clear:'clearBtn',copy:'copyBtn'};
+ for(const [key,id] of Object.entries(map)) document.getElementById(id).textContent=t[key];
+ document.getElementById('sourceText').placeholder=t.inputPh;
+ document.getElementById('resultText').placeholder=t.resultPh;
+ document.getElementById('changeLanguageBtn').textContent=t.changeLanguage;
+ document.getElementById('languagePrompt').textContent=t.languagePrompt;
+}
+function openLanguageChooser(){
+ document.getElementById('languageOverlay').hidden=false;
+}
+function selectInitialLanguage(lang){
+ setLanguage(lang);
+ document.getElementById('languageOverlay').hidden=true;
+}
+function chooseMode(symbol){
+ replacementSymbol=symbol;
+ document.getElementById('modeYe').classList.toggle('selected',symbol==='ѣ');
+ document.getElementById('modeYat').classList.toggle('selected',symbol==='ꙓ');
+}
+function convertText(){
+  let result=document.getElementById('sourceText').value;
+
+  // Особливе перетворення закінчень множини діє лише в російській
+  // та білоруській версіях. В українській версії цього правила немає.
+  // Наприклад: «сябры» → «сябрѣѣ» або «сябрꙓꙓ».
+  if (language === 'ru' || language === 'be') {
+    result = result.replace(/([\p{L}\p{M}]*)([\p{L}])([ыиіЫИІ])(?=$|[^\p{L}\p{M}])/gu,
+      (match, stem, lastLetter) => stem + lastLetter + replacementSymbol + replacementSymbol);
+  }
+
+  // Решта відповідних літер перетворюється в усіх трьох мовах.
+  result = result.replace(/[аАиИыЫеЕєЄэЭіІьЬ]/gu, replacementSymbol);
+
+  document.getElementById('resultText').value=result;
+  setStatus(translations[language].done);
+}
+function clearText(){
+ document.getElementById('sourceText').value='';
+ document.getElementById('resultText').value='';
+ setStatus('');
+}
+async function copyResult(){
+ const value=document.getElementById('resultText').value,t=translations[language];
+ if(!value){setStatus(t.nothing);return;}
+ try{await navigator.clipboard.writeText(value);setStatus(t.copied);}
+ catch(e){const field=document.getElementById('resultText');field.select();document.execCommand('copy');setStatus(t.copied);}
+}
+function setStatus(message){document.getElementById('status').textContent=message;}
+setLanguage(language);
+</script>
+</body>
+</html>
